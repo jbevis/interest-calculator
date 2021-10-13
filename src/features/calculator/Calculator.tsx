@@ -8,8 +8,14 @@ import {
   incrementAsync,
   incrementIfOdd,
   selectCount,
-} from './counterSlice';
+} from './calculatorSlice';
 import styles from './Calculator.module.css';
+
+export interface InterestData {
+  principal: string,
+  rate: string,
+  years: string
+}
 
 export function Calculator() {
   const count = useAppSelector(selectCount);
@@ -17,19 +23,30 @@ export function Calculator() {
   const [principal, setPrincipal] = useState('')
   const [rate, setRate] = useState('')
   const [years, setYears] = useState('')
-  const [total, setTotal] = useState();
+  const [total, setTotal] = useState(0);
 
-  
+  const convertStringToNum = (string: string) => Number(string);
+  const calculateInterest = (data: InterestData) => {
+    console.log(typeof Number(data.principal))
+    if (isNaN(Number(data.principal)) || isNaN(Number(data.rate)) || isNaN(Number(data.years))) {
+      console.error('Could not calculate with invalid entry.')
+      return null
+    }
+    const principal = convertStringToNum(data.principal)
+    const rate = convertStringToNum(data.rate) / 100
+    const years = convertStringToNum(data.years)
+    const calculatedTotal = principal * (1 + (rate * years))
+    
+    setTotal(calculatedTotal)
+  }
 
-  const calculatedTotal = Number(total);
-  console.log({calculatedTotal})
   return (
     <div>
       <form 
         className={styles.form}
         onSubmit={(e) => {
           e.preventDefault()
-          console.log(total)
+          calculateInterest({principal, rate, years})
         }}>
         <div className={styles.column}>
           <label>Principal ($)</label>
@@ -71,11 +88,12 @@ export function Calculator() {
           <button className={styles.button} type='submit'>Calculate</button>
         </div>
       </form>
-      {isNaN(calculatedTotal)
+      {isNaN(total)
         ? <div>Enter a principal, interest rate, and loan term to calculate a total</div>
         : <div>
             <h2>Calculated Total for Loan:</h2>
-            <h1>{calculatedTotal}</h1>
+            
+            <h1>${total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</h1>
           </div>
       }
     </div>
