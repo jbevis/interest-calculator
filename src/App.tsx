@@ -1,5 +1,3 @@
-import React from 'react';
-import logo from './logo.svg';
 import { Calculator } from './features/calculator/Calculator';
 import './App.css';
 
