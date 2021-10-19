@@ -4,13 +4,8 @@ import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import {
   setCalculated
 } from './calculatorSlice';
+import { calculateInterest } from '../../utils/utils';
 import styles from './Calculator.module.css';
-
-export interface InterestData {
-  initial: string,
-  rate: string,
-  years: string
-}
 
 export function Calculator() {
   const calculated = useAppSelector(setCalculated);
@@ -18,20 +13,6 @@ export function Calculator() {
   const [initial, setInitial] = useState('')
   const [rate, setRate] = useState('')
   const [years, setYears] = useState('')
-
-  const convertStringToNum = (string: string) => Number(string);
-  const calculateInterest = (data: InterestData) => {
-    if (isNaN(Number(data.initial)) || isNaN(Number(data.rate)) || isNaN(Number(data.years))) {
-      console.error('Could not calculate with invalid entry.')
-      return null
-    }
-    const principal = convertStringToNum(data.initial)
-    const rate = convertStringToNum(data.rate) / 100
-    const years = convertStringToNum(data.years)
-    const calculatedTotal = principal * (1 + (rate * years))
-    
-    return calculatedTotal
-  }
 
   return (
     <div>
@@ -81,12 +62,12 @@ export function Calculator() {
           <button className={styles.button} type='submit'>Calculate</button>
         </div>
       </form>
-      {isNaN(calculated.payload.calculator.calculated)
+      {calculated.payload.calculator.value === 0 || isNaN(calculated.payload.calculator.value)
         ? <div>Enter a principal, interest rate, and loan term to calculate a total</div>
         : <div>
             <h2>Calculated Total for Loan:</h2>
             
-            <h1>${calculated.payload.calculator.calculated.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</h1>
+            <h1>${calculated.payload.calculator.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</h1>
           </div>
       }
     </div>

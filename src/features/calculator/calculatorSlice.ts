@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export interface CalculatorState {
-  calculated: number
+  value: number
 }
 
 const initialState: CalculatorState = {
-  calculated: 0
+  value: 0
 };
 
 export const calculatorSlice = createSlice({
@@ -13,8 +13,7 @@ export const calculatorSlice = createSlice({
   initialState,
   reducers: { 
     setCalculated: (state, action) => {
-      console.log({state, action})
-      state.calculated = action.payload
+      state.value = action.payload
     }
   }
 });
